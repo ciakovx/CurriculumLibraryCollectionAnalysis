@@ -10,6 +10,18 @@ csl: apa.csl
 bibliography: CurrLibReportReferences.bib
 ---
 
+```{r setup,echo=FALSE,warning=FALSE}
+library(xtable)
+library(knitr)
+opts_knit$set(root.dir = "C:/Users/iakovakis/Documents/Projects/GeogCollectionAnalysis")
+setwd("C:/Users/iakovakis/Documents/Projects/GeogCollectionAnalysis")
+source(file.path(getwd(), "code/colclean.R"))
+source(file.path(getwd(), "code/checkouts_graph.R"))
+source(file.path(getwd(), "code/publication.R"))
+source(file.path(getwd(), "code/fullLC.R"))
+```
+
+
 ## Purpose of this document
 In November of 2014 I was formally assigned as the library liaison to Curriculum and Instruction. As part of this role, I was given the responsibility to help determine a path forward for the Curriculum Library. The purpose of this document is to provide some background and context to help guide the conversation. Section I provides a brief overview of the Curriculum Library and some analysis of use statistics. Section II is a succinct rationale for the maintenance of a curriculum library. Section III outlines the major issues that will need to be part of the discussion.
 
@@ -31,14 +43,11 @@ During the last several years, the Neumann Library has received print textbooks,
 [^fn-CLFN]: The Juvenile and Easy book collections are not included in this definition, although these collections could arguably be considered part of the Curriculum Library, since we collect them for primarily the same reasons as the textbooks; namely, as primary source materials for education students to use in developing teaching plans, ideas, lessons, and curriculum.
 
 ```{r, echo=FALSE, warning=FALSE, fig.width=8.5, fig.cap="Number of Items in Curriculum Library by Year: 1984-present"}
-source("C:/Users/iakovakis/Documents/Projects/acquisitions/colclean.R")
-source("C:/Users/iakovakis/Documents/Projects/acquisitions/checkouts_graph.R")
-source("C:/Users/iakovakis/Documents/Projects/acquisitions/publication.R")
-source("C:/Users/iakovakis/Documents/Projects/acquisitions/fullLC.R")
-library(xtable)
-
-setwd("C:/Users/iakovakis/Documents/Purchasing/Cur")
-cur <- read.csv(file = paste0(getwd(), "/CurAll.txt"), sep = "^", stringsAsFactors = F, na.strings = c("    ",""))
+cur <- read.csv(file = file.path(getwd()
+                                 , "data/curAll.txt")
+                , sep = "^"
+                , stringsAsFactors = F
+                , na.strings = c("    ",""))
 cur.all <- colclean(cur, 0)
 cur.c <- colclean(cur, 1)
 cur.rec <- cur.all[as.numeric(cur.all$x008.date.one) >= 1984, ]
@@ -91,7 +100,9 @@ plot_LC(cls.freq, "Dewey Classification")
 ```
 
 ```{r, echo=FALSE,fig.width=8.5,,fig.height=3,fig.cap="Number of Checkouts in Curriculum Library by Classification"}
-cls.sums <- aggregate(cur.lc$tot.chkout, by = list(cur.lc$cls), sum)
+cls.sums <- aggregate(cur.lc$tot.chkout
+                      , by = list(cur.lc$cls)
+                      , sum)
 names(cls.sums) <- c("cls", "total")
 dewey_checkouts(cls.sums)
 ```
@@ -111,29 +122,29 @@ stk.all <- colclean(stk, 0)
 lp <- c(1, 5, 10, 20, 30, 40)
 df = data.frame(matrix(nrow=6, ncol=2))
 for(i in seq_along(lp)){
-a <- nrow(cur.c[cur.c$tot.chkout >= lp[i], ])
-b <- nrow(stk.c[stk.c$tot.chkout >= lp[i], ])
-a1 <- round(a/nrow(cur.all) * 100, digits = 2)
-df[i, 1] <- paste0(a1, "% (n=",a,")")
-b1 <- round(b/nrow(stk.all) * 100, digits = 2)
-df[i, 2] <- paste0(b1, "% (n=",b,")")
-}
+  a <- nrow(cur.c[cur.c$tot.chkout >= lp[i], ])
+  b <- nrow(stk.c[stk.c$tot.chkout >= lp[i], ])
+  a1 <- round(a/nrow(cur.all) * 100, digits = 2)
+  df[i, 1] <- paste0(a1, "% (n=",a,")")
+  b1 <- round(b/nrow(stk.all) * 100, digits = 2)
+  df[i, 2] <- paste0(b1, "% (n=",b,")")
+  }
 condition <- rbind("1 or more"
-, "5 or more"
-, "10 or more"
-, "20 or more"
-, "30 or more"
-, "40 or more")
+                   , "5 or more"
+                   , "10 or more"
+                   , "20 or more"
+                   , "30 or more"
+                   , "40 or more")
 df <- data.frame(condition, df, row.names = NULL)
 names(df) <- c("Checkouts", "Proportion of Items: Curriculum", "Proportion of Items: General")
 ```
 
 ```{r, results='asis',echo=FALSE, warning=FALSE}
 print(xtable(df
-, caption = "Checkout Counts per Collection"
-, align = 'cccc')
-, include.rownames = FALSE
-, comment = FALSE)
+             , caption = "Checkout Counts per Collection"
+             , align = 'cccc')
+      , include.rownames = FALSE
+      , comment = FALSE)
 ```
 
 I'm not certain how accurate of an indicator this is because I do not know the ratio of items in either collection that are permitted or forbidden from circulating. One way of removing some of that uncertainty is to subset both collections to include **only** items with **one or more checkouts.** If an item has a checkout, it can likely be presumed to be circulating, and therefore the comparison is somewhat fairer. The consistently high proportions of checkouts in the Curriculum Library retain, as you can see in Table 3. This may not be an apples to apples comparison, since the general stacks is deep and broad whereas the curriculum collection is narrow and focused, but it is revealing nonetheless.
@@ -156,15 +167,17 @@ condition <- rbind("1 or more"
                    , "30 or more"
                    , "40 or more")
 df2 <- data.frame(condition, df2, row.names = NULL)
-names(df2) <- c("Checkouts", "Proportion of Items: Curriculum", "Proportion of Items: General")
+names(df2) <- c("Checkouts"
+                , "Proportion of Items: Curriculum"
+                , "Proportion of Items: General")
 ```
 
 ```{r, results='asis',echo=FALSE, warning=FALSE}
 print(xtable(df2
-, caption = "Checkout Counts per Collection - Subset of items with at least one checkout"
-, align = 'cccc')
-, include.rownames = FALSE
-, comment = FALSE)
+             , caption = "Checkout Counts per Collection - Subset of items with at least one checkout"
+             , align = 'cccc')
+      , include.rownames = FALSE
+      , comment = FALSE)
 ```
 
 Which specific items have high checkouts? Figure 4 is a plot of the 20 items with the highest checkouts in the Curriculum Library, colored according to the last year they circulated. All of the items have circulated in the last 4 years, with over 11 (55%) circulating in the last two years and 6 (30%) in the 2014 alone. Evidently, from this set of items at least, our patrons have continued to check out Curriculum Library items during the years of 2012-2014, despite the fact that the items are less than current. 
