@@ -13,8 +13,8 @@ bibliography: CurrLibReportReferences.bib
 ```{r setup,echo=FALSE,warning=FALSE}
 library(xtable)
 library(knitr)
-opts_knit$set(root.dir = "C:/Users/iakovakis/Documents/Projects/GeogCollectionAnalysis")
-setwd("C:/Users/iakovakis/Documents/Projects/GeogCollectionAnalysis")
+setwd("C:/Users/iakovakis/Documents/Projects/CurrLibCollectionAnalysis")
+opts_knit$set(root.dir = getwd())
 source(file.path(getwd(), "code/colclean.R"))
 source(file.path(getwd(), "code/checkouts_graph.R"))
 source(file.path(getwd(), "code/publication.R"))
