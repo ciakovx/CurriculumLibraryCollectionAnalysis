@@ -1,0 +1,239 @@
+---
+title: "Determining the Future of the Curriculum Collection"
+author: "Clarke Iakovakis"
+date: "December 16, 2014"
+output:
+  pdf_document:
+    fig_caption: yes
+  html_document: default
+csl: apa.csl
+bibliography: CurrLibReportReferences.bib
+---
+
+## Purpose of this document
+In November of 2014 I was formally assigned as the library liaison to Curriculum and Instruction. As part of this role, I was given the responsibility to help determine a path forward for the Curriculum Library. The purpose of this document is to provide some background and context to help guide the conversation. Section I provides a brief overview of the Curriculum Library and some analysis of use statistics. Section II is a succinct rationale for the maintenance of a curriculum library. Section III outlines the major issues that will need to be part of the discussion.
+
+### Critical questions
+
+These are the questions I see as critical to answer. Again, the following document does not attempt to answer these, but outlines some considerations that have some bearing in answering them.
+
+1. Will we build the Curriculum Library collections in the future? 
+2. If we will no longer build the Curriculum Library collections, what do we do with the material we currently have? In any event, some of that materials is out of date and needs to be weeded, therefore necessitating development of weeding criteria.
+3. If we will build the collections, by what means will we do so? What parties do we need to contact to solicit donations? Will we allocate funding, and if so, how much? How much can we or do we want to work with the UH Systems schools?
+4. How will we provide access to electronic textbooks and other electronic resources?
+5. Will we develop a mission and vision for the collection? What parties should be involved in establishing this? What data gathering and analysis methods will we use to ensure the collection is filling our users' needs?
+6. What levels of service will we provide in the areas of reference, instruction, and outreach?
+
+## Section I: Background of the Curriculum Library (as I understand it)
+### Composition of the collection
+During the last several years, the Neumann Library has received print textbooks, supplemental teaching materials, and audiovisual materials which have come to compose the Curriculum Library.[^fn-CLFN] These materials have been donated by Clear Creek Independent School District, donated by UHCL faculty, or collected directly from textbook publishers by UHCL faculty with personal connections--specifically Dr. Jones, who wrote science textbooks for Harcourt. As of December 3, 2014, , according to a query run in Sierra, there are 10,051 items in the Neumann Library catalog with the location classification *clcur*, the indicator for inclusion in the Curriculum Library.
+
+[^fn-CLFN]: The Juvenile and Easy book collections are not included in this definition, although these collections could arguably be considered part of the Curriculum Library, since we collect them for primarily the same reasons as the textbooks; namely, as primary source materials for education students to use in developing teaching plans, ideas, lessons, and curriculum.
+
+```{r, echo=FALSE, warning=FALSE, fig.width=8.5, fig.cap="Number of Items in Curriculum Library by Year: 1984-present"}
+source("C:/Users/iakovakis/Documents/Projects/acquisitions/colclean.R")
+source("C:/Users/iakovakis/Documents/Projects/acquisitions/checkouts_graph.R")
+source("C:/Users/iakovakis/Documents/Projects/acquisitions/publication.R")
+source("C:/Users/iakovakis/Documents/Projects/acquisitions/fullLC.R")
+library(xtable)
+
+setwd("C:/Users/iakovakis/Documents/Purchasing/Cur")
+cur <- read.csv(file = paste0(getwd(), "/CurAll.txt"), sep = "^", stringsAsFactors = F, na.strings = c("    ",""))
+cur.all <- colclean(cur, 0)
+cur.c <- colclean(cur, 1)
+cur.rec <- cur.all[as.numeric(cur.all$x008.date.one) >= 1984, ]
+pub_distr(cur.rec)
+```
+
+Figure 1 is a histogram (frequency count) of publication years for items in the Curriculum Collection from 1984 to the present. Table 1 shows the counts of items in the Curriculum Library aggregated per decade. 11 items were removed from the analysis for having improperly formatted dates. 
+
+```{r, results='asis',echo=FALSE, warning=FALSE}
+lst <- list()
+j <- c(1950, 1960, 1970, 1980, 1990, 2000, 2010)
+for(i in 1:7) {
+  c <- c(j[i], j[i] + 9)
+  z <- cur.all$x008.date.one[which(cur.all$x008.date.one >= c[1] & cur.all$x008.date.one <= c[2])]
+  lst[[i]] <- z
+}
+clcur.items <- data.frame("Decade" = paste0(j,"s")
+                          , "Number of Items" = sapply(lst, length)
+                          , check.names = FALSE)
+library(xtable)
+print(xtable(clcur.items
+             , caption = "Curriculum Library Publication Date Counts By Decade"
+             , align = "ccc")
+      , include.rownames = FALSE
+      , comment = FALSE)
+```
+
+The collection is clearly strongest from the late '90s to the mid '00s, with a spike of books published in 2011. No new items have been added to the collection since 2011. From what I've been able to gather, there are three reasons for this:
+
+* There have been no new donations from publishers or faculty (for reasons not entirely known)
+* There have been no new donations from Clear Creek ISD (see below paragraph)
+* The library collections budget does not include any funding lines allocated to purchasing collections for the Curriculum Library
+
+Clear Creek ISD previously used to donate, with some regularity, a substantial number of their leftover print textbooks to the Curriculum Library, but they have informed us that they would no longer do so because they are investing bond funds into purchasing tablet computers for each student in grades 4-12 as part of their [Latitude 2 Learn Initiative](http://www.ccisd.net/departments/technology/latitude-to-learn) (L2L). Their students will use these tablets as their primary learning tools, and the schools are moving away from purchasing printed textbooks and towards licensing electronic textbooks, which students access via online portals. Students in PK-3 will also have access to tablets, in the classroom only--I have not determined whether they still have printed textbooks or not. CCISD's [L2L FAQ](http://www.ccisd.net/departments/technology/latitude-to-learn/faqs), states that "The district is transitioning from sole dependency on textbooks to an environment that allows access to a much greater range of educational materials and experiences. Printed textbooks will still be available during this transition period. Over time, digital textbooks and other resources will be adopted." However, on December 9, 2014, the *Houston Chronicle* published [an article](http://www.chron.com/neighborhood/bayarea/news/article/Clear-Creek-school-district-officials-seek-input-5945345.php) [@chron] stating that CCISD is currently "looking to adopt resource materials - textbooks and digital materials - for 12th-grade social studies, high school math, and fine arts" and sought input from parents. Therefore we should not yet close the door on the possibility of obtaining items from CCISD, if we go forward with developing the collection.
+
+Looking briefly at the collection composition, we can plot item counts grouped by call number classification. After removing 86 items with non-DDC call number classifications, Figure 2 shows that 3,534 items--a majority--are classified in the 300 class of the Dewey Decimal system, which is social sciences, education, sociology, and anthropology. In fact, that high count is not due to the presence of textbooks on those particular topics, but rather due to a high number of textbooks on reading and language arts that are classified in the 370s, which is the heading for Education. Science and mathematics items in the 500 class are a fairly close second, at 3,022. Figure 3 shows, perhaps not surprisingly, that checkouts per call number class correlate closely with counts per call number class.
+
+```{r, echo=FALSE,fig.width=8.5,fig.height=3,fig.cap="Number of Items in Curriculum Library by Classification"}
+# How many of each class? This should be put into colclean
+cur.all$call...biblio. <- str_trim(cur.all$call...biblio.)
+cur.all$call...item. <- str_trim(cur.all$call...item.)
+cur.lc <- fullLC2(cur.all)
+cur.lc$LC[grepl("^[[:alpha:]]", cur.lc$LC)] <- NA
+
+cur.lc$cls <- substr(cur.lc$LC, 1, 1)
+cls.freq <- data.frame(table(cur.lc$cls))
+cls.freq$Var1 <- paste0(cls.freq$Var1, "00")
+colnames(cls.freq)[1] <- "cls"
+plot_LC(cls.freq, "Dewey Classification")
+```
+
+```{r, echo=FALSE,fig.width=8.5,,fig.height=3,fig.cap="Number of Checkouts in Curriculum Library by Classification"}
+cls.sums <- aggregate(cur.lc$tot.chkout, by = list(cur.lc$cls), sum)
+names(cls.sums) <- c("cls", "total")
+dewey_checkouts(cls.sums)
+```
+
+### Collection usage
+Despite lacking both a formal and specified collection development statement and a collections budget allocation, items in the Curriculum Library appear to have been checked out at relatively high rates. For comparison, I extracted from Sierra all items in the collection cataloged as *clstk* to represent the "General Collection." 51.7% (n=5,205) of items in the Curriculum Library have been checked out at least once, compared with 30.7% (n=113,926) of items in the General Collection. Indeed, Table 2 shows that the Curriculum Library consistently has proportionally higher checkouts than the General Collection, with the exception of items with checkouts above 40. 
+
+```{r, echo=FALSE}
+# Reading in stk data
+setwd("C:/Users/iakovakis/Documents/Purchasing/Cur")
+stk <- read.csv(file = paste0(getwd(), "./stk.csv"), stringsAsFactors = F)
+stk.c <- colclean(stk, 1)
+stk.all <- colclean(stk, 0)
+```
+
+```{r, echo=FALSE}
+lp <- c(1, 5, 10, 20, 30, 40)
+df = data.frame(matrix(nrow=6, ncol=2))
+for(i in seq_along(lp)){
+a <- nrow(cur.c[cur.c$tot.chkout >= lp[i], ])
+b <- nrow(stk.c[stk.c$tot.chkout >= lp[i], ])
+a1 <- round(a/nrow(cur.all) * 100, digits = 2)
+df[i, 1] <- paste0(a1, "% (n=",a,")")
+b1 <- round(b/nrow(stk.all) * 100, digits = 2)
+df[i, 2] <- paste0(b1, "% (n=",b,")")
+}
+condition <- rbind("1 or more"
+, "5 or more"
+, "10 or more"
+, "20 or more"
+, "30 or more"
+, "40 or more")
+df <- data.frame(condition, df, row.names = NULL)
+names(df) <- c("Checkouts", "Proportion of Items: Curriculum", "Proportion of Items: General")
+```
+
+```{r, results='asis',echo=FALSE, warning=FALSE}
+print(xtable(df
+, caption = "Checkout Counts per Collection"
+, align = 'cccc')
+, include.rownames = FALSE
+, comment = FALSE)
+```
+
+I'm not certain how accurate of an indicator this is because I do not know the ratio of items in either collection that are permitted or forbidden from circulating. One way of removing some of that uncertainty is to subset both collections to include **only** items with **one or more checkouts.** If an item has a checkout, it can likely be presumed to be circulating, and therefore the comparison is somewhat fairer. The consistently high proportions of checkouts in the Curriculum Library retain, as you can see in Table 3. This may not be an apples to apples comparison, since the general stacks is deep and broad whereas the curriculum collection is narrow and focused, but it is revealing nonetheless.
+
+```{r, echo=FALSE}
+lp <- c(1, 5, 10, 20, 30, 40)
+df2 = data.frame(matrix(nrow=6, ncol=2))
+for(i in seq_along(lp)){
+  a <- nrow(cur.c[cur.c$tot.chkout >= lp[i], ])
+  b <- nrow(stk.c[stk.c$tot.chkout >= lp[i], ])
+  a1 <- round(a/nrow(cur.c) * 100, digits = 2)
+  df2[i, 1] <- paste0(a1, "% (n=",a,")")
+  b1 <- round(b/nrow(stk.c) * 100, digits = 2)
+  df2[i, 2] <- paste0(b1, "% (n=",b,")")
+}
+condition <- rbind("1 or more"
+                   , "5 or more"
+                   , "10 or more"
+                   , "20 or more"
+                   , "30 or more"
+                   , "40 or more")
+df2 <- data.frame(condition, df2, row.names = NULL)
+names(df2) <- c("Checkouts", "Proportion of Items: Curriculum", "Proportion of Items: General")
+```
+
+```{r, results='asis',echo=FALSE, warning=FALSE}
+print(xtable(df2
+, caption = "Checkout Counts per Collection - Subset of items with at least one checkout"
+, align = 'cccc')
+, include.rownames = FALSE
+, comment = FALSE)
+```
+
+Which specific items have high checkouts? Figure 4 is a plot of the 20 items with the highest checkouts in the Curriculum Library, colored according to the last year they circulated. All of the items have circulated in the last 4 years, with over 11 (55%) circulating in the last two years and 6 (30%) in the 2014 alone. Evidently, from this set of items at least, our patrons have continued to check out Curriculum Library items during the years of 2012-2014, despite the fact that the items are less than current. 
+
+```{r, echo=FALSE, warning=FALSE, fig.width=8.5, fig.height=5, fig.cap="Top 20 Curriculum Library Checkouts"}
+checkouts_graph_md(cur.c, 20, "loutyear", "Year Last \nChecked Out")
+```
+
+## Section II: What is the rationale for a Curriculum Library?
+Curriculum libraries housed in academic libraries have always been unique in that they constitute an entire collection that supports "a distinct but relatively small population of users compared to the general academic library" [@beile, p. vi]. The collections often are closely integrated with Colleges of Education, sometimes even with the administrative structure of the latter. Also, according to a survey by the Education and Behavioral Sciences Section of ACRL, although the primary source of funds is the academic library budget, most are dependent on "in-kind" sources like gifts, fines, or donations [@meyer, pp. 80-82]. Finally, due to the expense of maintaining a separate space and development structure, and the uniqueness of their services, curriculum libraries are "often scrutinized at times when administrative budgets are flat or decreasing" [@beile, p. vi].
+
+Below are a few arguments for continuing to maintain and build the Curriculum Library collections and services:
+
+* Since the passage of the No Child Left Behind Act, K-12 curriculum has increasingly been focused on students' ability to meet standards and outcomes as the primary measurement of the instructor's success in conveying knowledge and information. Therefore, "it has become even more important that teachers-to-be be able not only to work with and analyze curriculum materials before they enter the classroom, but also to understand how these curriculum materials can aid them in meeting national standards...Without proper preparation before entering the classroom, teachers cannot be expected to produce the results required by state and federal governments, and yet they are held accountable" [@alteri, p. 33]
+* Integrating a robust collection and service with the education of teachers gets them accustomed to developing a collaborative relationship with the library, which they will then carry to the school to the benefit of the school library and the students
+* "The recent inclusion of information literacy skills in the national education guidelines demonstrates the need for teachers to become information-literate as a part of their preservice education program" [@brisco, p. 211]--if the library is omitted from teachers' educational experience, they may not see the librarian as an instructional partner, and their own information literacy skills can suffer
+* "As universities attempt to market their teacher training programs as centers of excellence, a well-equipped and active CMC is impressive evidence of a university's commitment to teacher education" [@yoder, p. 247] and so can help with recruitment of new faculty and students
+* NCATE & AACTE have indicated an imperative for teacher education programs to integrate "practice-based experiences along with pedagogy and content" [@yoder, p. 247]. This increases the necessity for students to have hands-on access to curriculum materials as preparation for their profession. See below section for more on NCATE standards.
+
+## Section III: Issues to consider in determining the future of the Curriculum Library
+These are some of the issues we should consider as we discuss whether to continue to maintain and build the collections of the Curriculum Library and the services of the Research & Instruction Librarian responsible for the Curriculum Library. 
+
+### NCATE Accreditation Standards
+The National Council for Accreditation of Teacher Education (NCATE) standard 6E target [@ncate, p. 45] is reproduced in its entirety below, with emphasis mine. UHCL will not come up for reaccreditation until 2021; nonetheless the question of who will serve as an "IT resource center," and who will provide access to "exemplary" curricular resources--the School of Education or the Neumann Library--is a pertinent one. 
+
+> **NCATE Standard 6E:** (Unit Resources Including Technology.) Target: "The unit aggressively and successfully secures resources to support high-quality and exemplary programs and projects to ensure that candidates meet standards. The development and implementation of the unit's assessment system is well funded. The unit serves as an information technology resource in education beyond the education programs-to the institution, community, and other institutions. *Faculty and candidates have access to exemplary library, curricular, and electronic information resources that serve not only the unit but also a broader constituency.* Resources for distance learning programs provide exceptional reliability, speed, and confidentiality of connection in the delivery system."
+
+### Developing a strategic vision & collection development statement for the Curriculum Library
+The Curriculum Library collection has not been developed according to explicit criteria, but has rather come together from disparate sources outside the library; therefore, there is not a formal collection development statement, nor has there been a specified vision or strategy for the collection; at least, I have not seen or read one. The collection does have high numbers of reading and math & science materials, which corresponds to the foci of a number of faculty. If that arose deliberately, it was due to librarians' knowledge and not a written plan.
+
+I have not collected or reviewed data directly from students or faculty about how they use (or do not use) the Curriculum Library. I therefore do not know the ways in which they use the collections or physical space, or whether the collections are integrated into assignments, or if they needed materials that the collection did not have. If we decide to retain and build the collection, it would be advantageous to conduct a needs assessment in partnership with the School of Education and other stakeholders (possibly Nursing & English). We should then use this as a tool in drafting a strategic vision, a collection development statement, and a service model to ensure the Library is meeting and anticipating the needs of its users with its services and collections.
+
+We will also need to develop a plan for a means for building the collections, including soliciting donations from faculty members, reaching out to school districts, contacting publishers, and applying for grants. We will need to determine whether we will allocate any of the budget to purchasing materials. It is without question that textbook sets take up a lot of space, are very expensive, and can include lots of pieces which can increase the burden on technical services. Furthermore, "because of their short life span, textbook series must be acquired soon after they are published if they are to be of maximum use" [@sisson, p. 48]. All of this speaks to the importance of planning and strategy.
+
+A service model should include the scope of reference services, outreach activities, and instruction sessions offered, potentially scaling up to assisting students with using the resources to develop lesson plans, and obtaining, utilizing, and teaching new technology and equipment that is available in the PK-12 classroom. @brisco [p. 202] makes the argument:
+
+> "Unfortunately, those academic libraries that merely provide a collection of K-12 textbooks, theoretical print materials, and curriculum guides housed separately within the library's main collection are not properly providing for the educational needs of today's preservice educators or the school environment that awaits them. Materials alone do not adequately provide preservice teachers with the skills necessary in developing lessons that require evidence of curriculum correlations to instructional objectives."
+
+Outreach activities can also potentially extend to local area educators, administrators, school librarians, and students.
+
+### Electronic textbooks & supplemental resources
+The decision to move towards electronic textbooks is now commonplace in school districts across the country, and is not unique to CCISD. If we are to retain and build the Curriculum Library, we will need to conduct some research into ways to provide access to some of these electronic resources to UHCL students. Just as having access to print textbooks has been a critical tool for helping teacher candidates learn and prepare for their careers, so will they require access to electronic textbooks and other resources. This argument is amplified when considering our off-campus and distance education users. Again, it will be of great value to partner with faculty, particularly those in the Curriculum & Instruction and Instructional Design & Technology Programs to help develop a plan. It also will be worthwhile to explore access options directly from publishers, who (I conjecture) may be open to providing access to our students, who will someday be future teachers making textbook adoption suggestions.
+
+The following list of supplementary materials is adapted from @brisco [p. 204 & 208] :
+
+* educational materials
+    * posters and maps
+    * foreign language materials
+    * e-books for elementary students (such as BookFlix, TumbleBooks, or Capstone Interactive) 
+    * MP3 players for audiobooks (such as Playaway) 
+    * video streaming programs (such as Discovery Education or Learn360) 
+    * subscription databases specifically designed for children and young adults (such as World Book Online, SIRS, EBSCO's  Searchasaurus, etc.)
+    * kits, games, puppets
+    * testing materials
+* equipment
+    * laptop computers or iPads
+    * recording equipment (cameras, audio recorders)
+    * video gaming equipment and games 
+    * geocaching equipment
+    * craft equipment (die cut machines, laminators)
+    * smart boards
+    * projectors
+
+An enhanced curriculum library would provide access to some of these items if the vision is to support preservice teachers in the development of instructional content; i.e. to give them the opportunity to work with technology & equipment as training for their future profession. 
+
+### UH System textbook collections
+Both UH Main and UH Downtown campuses have textbook collections, and both campuses allocate collection funds to develop them.  In fact, UH Main was listed in the 2006 ACRL Directory of Curriculum Materials Centers [@acrldir] as having a collections budget of $1,000-3,000, with only 10% of that coming from the library's budget. I attached the full listing below. I'm not sure how much of the information has changed in the last 10 years, and I recommend we discuss this with them pending our decision.
+
+Textbook collections are, in my view, a sort of special collections, insofar as they are housed separately, with a different classification scheme and formats, and aimed at a specialized audience, Due to this uniqueness, plus the expense, we might consider exploring cooperative collection development for our textbooks with the other two campuses, including the establishment of a consortium for negotiating access to electronic textbooks. 
+
+***
+## References
