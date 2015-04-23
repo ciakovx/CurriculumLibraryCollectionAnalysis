@@ -67,7 +67,6 @@ for(i in 1:7) {
 clcur.items <- data.frame("Decade" = paste0(j,"s")
                           , "Number of Items" = sapply(lst, length)
                           , check.names = FALSE)
-library(xtable)
 print(xtable(clcur.items
              , caption = "Curriculum Library Publication Date Counts By Decade"
              , align = "ccc")
